@@ -3,30 +3,35 @@ MAINTAINER camilo@camilo.fm
 
 ENV TERM=xterm
 
+ARG RELEASE
+ARG REPOSITORY
+
 # Installing dependencies
 RUN apt-get update && \
-    apt-get upgrade -y
-RUN apt-get install git make lua5.1 luarocks \
-	liblua5.1-dev libidn11-dev libssl-dev libexpat-dev -y
-RUN luarocks install luasocket && \
+    apt-get upgrade -y && \
+    apt-get install git make lua5.1 luarocks \
+	liblua5.1-dev libidn11-dev libssl-dev libexpat-dev -y && \
+    luarocks install luasocket && \
     luarocks install luaexpat && \
     luarocks install luafilesystem && \
     luarocks install luasec && \
-    luarocks install luabitop
+    luarocks install luabitop && \
 
-RUN mkdir -p /etc/prosody/ /var/lib/prosody /var/log/prosody /var/run/prosody && \
+    mkdir -p /etc/prosody/ /var/lib/prosody /var/log/prosody /var/run/prosody && \
     useradd -d /etc/prosody -s /sbin/nologin prosody && \
-    chown -R prosody:prosody /etc/prosody/ /var/lib/prosody /var/log/prosody /var/run/prosody
+    chown -R prosody:prosody /etc/prosody/ /var/lib/prosody /var/log/prosody /var/run/prosody && \
 
-# Downloading and installing Prosody
-ARG RELEASE
-ARG REPOSITORY
-RUN git clone --depth=1 --branch $RELEASE $REPOSITORY /root/prosody
-RUN cd /root/prosody/ && \
+    # Downloading and installing Prosody
+    git clone --depth=1 --branch $RELEASE $REPOSITORY /root/prosody && \
+    cd /root/prosody/ && \
     ./configure --ostype=debian --prefix= --require-config && \
     make && \
     make install && \
-    rm /root/prosody/ -r && ls /root
+    rm /root/prosody/ -rf && \
+
+    apt-get remove git make -y && \
+    apt-get autoremove -y && \
+    apt-get clean
 
 USER prosody
 WORKDIR /etc/prosody
