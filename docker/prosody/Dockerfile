@@ -5,17 +5,20 @@ ENV TERM=xterm
 
 ARG RELEASE
 ARG REPOSITORY
+ARG SHOULD_BUILD
 
 # Installing dependencies
 RUN apt-get update && \
-    apt-get upgrade -y && \
+    apt-get upgrade -y
+RUN echo $SHOULD_BUILD && [ $SHOULD_BUILD = true ] && apt-get install prosody -y || \
     apt-get install git make lua5.1 luarocks \
-	liblua5.1-dev libidn11-dev libssl-dev libexpat-dev -y && \
+	liblua5.1-dev libidn11-dev libssl-dev libexpat-dev libevent-dev -y && \
     luarocks install luasocket && \
     luarocks install luaexpat && \
     luarocks install luafilesystem && \
     luarocks install luasec && \
     luarocks install luabitop && \
+    luarocks install luaevent && \
 
     mkdir -p /etc/prosody/ /var/lib/prosody /var/log/prosody /var/run/prosody && \
     useradd -d /etc/prosody -s /sbin/nologin prosody && \
@@ -27,9 +30,9 @@ RUN apt-get update && \
     ./configure --ostype=debian --prefix= --require-config && \
     make && \
     make install && \
-    rm /root/prosody/ -rf && \
+    rm /root/prosody/ -rf
 
-    apt-get remove git make -y && \
+RUN apt-get remove git make -y && \
     apt-get autoremove -y && \
     apt-get clean
 
