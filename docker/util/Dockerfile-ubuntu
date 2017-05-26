@@ -1,0 +1,5 @@
+FROM ubuntu:latest
+MAINTAINER camilo@camilo.fm
+
+RUN apt-get update && \
+    apt-get upgrade -y
