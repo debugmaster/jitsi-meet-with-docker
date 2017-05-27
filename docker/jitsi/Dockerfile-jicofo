@@ -5,24 +5,24 @@ SHELL ["/bin/bash", "-c"]
 
 ARG SHOULD_BUILD
 
-RUN [[ $SHOULD_BUILD == true ]] && \
+RUN [[ $SHOULD_BUILD != true ]] || ( \
     apt-get install -y --no-install-recommends \
         ant \
         git \
         default-jdk-headless \
-        maven || true
+        maven )
 
 ARG RELEASE
 ARG RELEASE_VERSION
 ARG REPOSITORY
 
 # Create dummy files to pass to the next container when it is not built
-RUN [[ $SHOULD_BUILD != true ]] && \
+RUN [[ $SHOULD_BUILD == true ]] || ( \
     mkdir -p /root/jicofo/resources/install/debian/ && \
     touch /root/jicofo.zip \
-    touch /root/jicofo/resources/install/debian/init.d || true
+    touch /root/jicofo/resources/install/debian/init.d )
 
-RUN [[ $SHOULD_BUILD == true ]] && \
+RUN [[ $SHOULD_BUILD != true ]] || ( \
     git clone --depth=1 --branch $RELEASE $REPOSITORY /root/jicofo && \
     cd /root/jicofo && \
     mvn package \
@@ -33,7 +33,7 @@ RUN [[ $SHOULD_BUILD == true ]] && \
         -DartifactId=maven-ant-tasks \
         -Dversion=2.1.3 && \
     ant -lib /root/.m2/repository/org/apache/maven/maven-ant-tasks/2.1.3 -Dlabel=$RELEASE_VERSION dist.lin64 && \
-    mv /root/jicofo/dist/linux/jicofo-linux-x64-$RELEASE_VERSION.zip /root/jicofo.zip || true
+    mv /root/jicofo/dist/linux/jicofo-linux-x64-$RELEASE_VERSION.zip /root/jicofo.zip )
 
 FROM ubuntu:updated
 
@@ -44,13 +44,19 @@ COPY --from=0 /root/jicofo/resources/install/debian/init.d /etc/init.d/jicofo
 
 ARG SHOULD_BUILD
 
-RUN [[ $SHOULD_BUILD != true ]] && \
+RUN [[ $SHOULD_BUILD == true ]] || ( \
     rm /root/jicofo.zip /etc/init.d/jicofo && \
-    apt-get install wget -y && \
+    apt-get install apt-transport-https ca-certificates wget -y --no-install-recommends && \
     wget -qO - https://download.jitsi.org/jitsi-key.gpg.key | apt-key add - && \
-    apt-get install jicofo -y || true
+    echo 'deb https://download.jitsi.org stable/' > /etc/apt/sources.list.d/jitsi-stable.list && \
+    apt-get update && \
+    apt-get install jicofo -y --no-install-recommends && \
+    apt-get remove wget -y && \
+    apt-get autoremove -y && \
+    apt-get clean -y && \
+    apt-get autoclean -y)
 
-RUN [[ $SHOULD_BUILD == true ]] && \
+RUN [[ $SHOULD_BUILD != true ]] || ( \
     apt-get install default-jre-headless unzip -y --no-install-recommends && \
     unzip /root/jicofo.zip -d /root/jicofo && \
     mv /root/jicofo/jicofo-linux-x64-* /usr/share/jicofo && \
@@ -62,7 +68,7 @@ RUN [[ $SHOULD_BUILD == true ]] && \
     apt-get remove unzip -y && \
     apt-get autoremove -y && \
     apt-get clean -y && \
-    apt-get autoclean -y || true
+    apt-get autoclean -y )
 
 USER jicofo
 WORKDIR /etc/jitsi/jicofo
