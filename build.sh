@@ -4,14 +4,14 @@ source project.env
 
 docker build \
     -t ubuntu:updated \
-    -f ./docker/util/Dockerfile-ubuntu ./docker/util/
+    -f ./docker/Dockerfile-ubuntu ./docker/
 
 docker build \
     --build-arg RELEASE=$PROSODY_RELEASE \
     --build-arg REPOSITORY=$PROSODY_REPOSITORY \
     --build-arg SHOULD_BUILD=$BUILD_PROSODY \
     -t $DOCKER_REPOSITORY/prosody \
-    -f ./docker/prosody/Dockerfile-prosody ./docker/prosody/
+    -f ./docker/Dockerfile-prosody ./docker/
 
 docker build \
     --build-arg RELEASE=$JICOFO_RELEASE \
@@ -19,7 +19,7 @@ docker build \
     --build-arg REPOSITORY=$JICOFO_REPOSITORY \
     --build-arg SHOULD_BUILD=$BUILD_JICOFO \
     -t $DOCKER_REPOSITORY/jicofo \
-    -f ./docker/jitsi/Dockerfile-jicofo ./docker/jitsi/
+    -f ./docker/Dockerfile-jicofo ./docker/
 
 docker build \
     --build-arg RELEASE=$JVB_RELEASE \
@@ -27,4 +27,4 @@ docker build \
     --build-arg REPOSITORY=$JVB_REPOSITORY \
     --build-arg SHOULD_BUILD=$BUILD_JVB \
     -t $DOCKER_REPOSITORY/jitsi-videobridge \
-    -f ./docker/jitsi/Dockerfile-jitsi-videobridge ./docker/jitsi/
+    -f ./docker/Dockerfile-jitsi-videobridge ./docker/
