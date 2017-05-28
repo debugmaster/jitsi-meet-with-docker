@@ -1,0 +1,76 @@
+FROM ubuntu:updated
+MAINTAINER camilo@camilo.fm
+
+SHELL ["/bin/bash", "-c"]
+
+ARG SHOULD_BUILD
+
+RUN [[ $SHOULD_BUILD != true ]] || ( \
+    apt-get install -y --no-install-recommends \
+        ant \
+        git \
+        default-jdk-headless \
+        maven )
+
+ARG RELEASE
+ARG RELEASE_VERSION
+ARG REPOSITORY
+
+# Create dummy files to pass to the next container when it is not built
+RUN [[ $SHOULD_BUILD == true ]] || ( \
+    mkdir -p /root/jitsi-videobrige/resources/install/debian/ && \
+    touch /root/jitsi-videobridge.zip \
+    touch /root/jitsi-videobridge/resources/install/debian/init.d )
+
+RUN [[ $SHOULD_BUILD != true ]] || ( \
+    git clone --depth=1 --branch $RELEASE $REPOSITORY /root/jitsi-videobridge && \
+    cd /root/jitsi-videobridge && \
+    mvn package \
+        -f pom.xml \
+        -DskipTests && \
+    mvn dependency:get \
+        -DgroupId=org.apache.maven \
+        -DartifactId=maven-ant-tasks \
+        -Dversion=2.1.3 && \
+    ant -lib /root/.m2/repository/org/apache/maven/maven-ant-tasks/2.1.3 -Dlabel=$RELEASE_VERSION dist.lin64 && \
+    mv /root/jitsi-videobridge/dist/linux/jitsi-videobridge-linux-x64-$RELEASE_VERSION.zip /root/jitsi-videobridge.zip )
+
+FROM ubuntu:updated
+
+SHELL ["/bin/bash", "-c"]
+
+COPY --from=0 /root/jitsi-videobridge.zip /root/jitsi-videobridge.zip
+COPY --from=0 /root/jitsi-videobridge/resources/install/debian/init.d /etc/init.d/jitsi-videobridge
+
+ARG SHOULD_BUILD
+
+RUN [[ $SHOULD_BUILD == true ]] || ( \
+    rm /root/jitsi-videobridge.zip /etc/init.d/jitsi-videobridge && \
+    apt-get install apt-transport-https ca-certificates wget -y --no-install-recommends && \
+    wget -qO - https://download.jitsi.org/jitsi-key.gpg.key | apt-key add - && \
+    echo 'deb https://download.jitsi.org stable/' > /etc/apt/sources.list.d/jitsi-stable.list && \
+    apt-get update && \
+    apt-get install jitsi-videobridge -y --no-install-recommends && \
+    apt-get remove wget -y && \
+    apt-get autoremove -y && \
+    apt-get clean -y && \
+    apt-get autoclean -y)
+
+RUN [[ $SHOULD_BUILD != true ]] || ( \
+    apt-get install default-jre-headless unzip -y --no-install-recommends && \
+    unzip /root/jitsi-videobridge.zip -d /root/jitsi-videobridge && \
+    mv /root/jitsi-videobridge/jitsi-videobridge-linux-x64-* /usr/share/jitsi-videobridge && \
+    chmod 755 /etc/init.d/jitsi-videobridge && \
+    mkdir -p /etc/jitsi/videobridge /var/log/jitsi &&\
+    groupadd jitsi && \
+    useradd -d /usr/share/jitsi-videobridge -s /sbin/nologin -g jitsi jvb && \
+    chown -R jvb:jitsi /etc/jitsi/videobridge/ /var/log/jitsi /usr/share/jitsi-videobridge && \
+    apt-get remove unzip -y && \
+    apt-get autoremove -y && \
+    apt-get clean -y && \
+    apt-get autoclean -y )
+
+USER jvb
+WORKDIR /etc/jitsi/videobridge
+
+CMD tail -f /dev/null
