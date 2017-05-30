@@ -14,6 +14,13 @@ docker build \
     -f ./docker/Dockerfile-prosody ./docker/
 
 docker build \
+    --build-arg RELEASE=$JITSI_MEET_RELEASE \
+    --build-arg REPOSITORY=$JITSI_MEET_REPOSITORY \
+    --build-arg SHOULD_BUILD=$BUILD_JITSI_MEET \
+    -t $DOCKER_REPOSITORY/jitsi-meet \
+    -f ./docker/Dockerfile-jitsi-meet ./docker/
+
+docker build \
     --build-arg RELEASE=$JICOFO_RELEASE \
     --build-arg RELEASE_VERSION=$JICOFO_RELEASE_VERSION \
     --build-arg REPOSITORY=$JICOFO_REPOSITORY \
