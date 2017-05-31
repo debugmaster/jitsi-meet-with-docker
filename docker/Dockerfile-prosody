@@ -46,6 +46,8 @@ RUN [[ $SHOULD_BUILD != true ]] || ( \
     apt-get autoclean -y && \
     apt-get autoremove -y )
 
+EXPOSE 5222, 5269, 5280, 5281, 5347
+
 USER prosody
 WORKDIR /etc/prosody
 

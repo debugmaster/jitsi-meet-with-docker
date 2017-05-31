@@ -69,4 +69,6 @@ RUN [[ $SHOULD_BUILD != true ]] || ( \
 USER meet
 WORKDIR /etc/jitsi/meet
 
+EXPOSE 80 443
+
 CMD tail -f /dev/null
