@@ -18,8 +18,8 @@ ARG REPOSITORY
 
 # Create dummy files to pass to the next container when it is not built
 RUN [[ $SHOULD_BUILD == true ]] || ( \
-    mkdir -p /root/jitsi-videobrige/resources/install/debian/ && \
-    touch /root/jitsi-videobridge.zip \
+    mkdir -p /root/jitsi-videobridge/resources/install/debian/ && \
+    touch /root/jitsi-videobridge.zip && \
     touch /root/jitsi-videobridge/resources/install/debian/init.d )
 
 RUN [[ $SHOULD_BUILD != true ]] || ( \
