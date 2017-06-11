@@ -3,50 +3,7 @@ MAINTAINER camilo@camilo.fm
 
 SHELL ["/bin/bash", "-c"]
 
-ARG SHOULD_BUILD
-
-RUN [[ $SHOULD_BUILD != true ]] || ( \
-    apt-get install -y --no-install-recommends \
-        ant \
-        git \
-        default-jdk-headless \
-        maven )
-
-ARG RELEASE
-ARG RELEASE_VERSION
-ARG REPOSITORY
-
-# Create dummy files to pass to the next container when it is not built
-RUN [[ $SHOULD_BUILD == true ]] || ( \
-    mkdir -p /root/jicofo/resources/install/debian/ && \
-    touch /root/jicofo.zip \
-    touch /root/jicofo/resources/install/debian/init.d )
-
-RUN [[ $SHOULD_BUILD != true ]] || ( \
-    git clone --depth=1 --branch $RELEASE $REPOSITORY /root/jicofo && \
-    cd /root/jicofo && \
-    mvn package \
-        -f pom.xml \
-        -DskipTests && \
-    mvn dependency:get \
-        -DgroupId=org.apache.maven \
-        -DartifactId=maven-ant-tasks \
-        -Dversion=2.1.3 && \
-    ant -lib /root/.m2/repository/org/apache/maven/maven-ant-tasks/2.1.3 -Dlabel=$RELEASE_VERSION dist.lin64 && \
-    mv /root/jicofo/dist/linux/jicofo-linux-x64-$RELEASE_VERSION.zip /root/jicofo.zip )
-
-FROM ubuntu:updated
-
-SHELL ["/bin/bash", "-c"]
-
-COPY --from=0 /root/jicofo.zip /root/jicofo.zip
-COPY --from=0 /root/jicofo/resources/install/debian/init.d /etc/init.d/jicofo
-
-ARG SHOULD_BUILD
-
-RUN [[ $SHOULD_BUILD == true ]] || ( \
-    rm /root/jicofo.zip /etc/init.d/jicofo && \
-    apt-get install apt-transport-https ca-certificates wget -y --no-install-recommends && \
+RUN apt-get install apt-transport-https ca-certificates wget -y --no-install-recommends && \
     wget -qO - https://download.jitsi.org/jitsi-key.gpg.key | apt-key add - && \
     echo 'deb https://download.jitsi.org stable/' > /etc/apt/sources.list.d/jitsi-stable.list && \
     apt-get update && \
@@ -54,21 +11,7 @@ RUN [[ $SHOULD_BUILD == true ]] || ( \
     apt-get remove wget -y && \
     apt-get autoremove -y && \
     apt-get clean -y && \
-    apt-get autoclean -y)
-
-RUN [[ $SHOULD_BUILD != true ]] || ( \
-    apt-get install default-jre-headless unzip -y --no-install-recommends && \
-    unzip /root/jicofo.zip -d /root/jicofo && \
-    mv /root/jicofo/jicofo-linux-x64-* /usr/share/jicofo && \
-    chmod 755 /etc/init.d/jicofo && \
-    mkdir -p /etc/jitsi/jicofo /var/log/jitsi &&\
-    groupadd jitsi && \
-    useradd -d /usr/share/jicofo -s /sbin/nologin -g jitsi jicofo && \
-    chown -R jicofo:jitsi /etc/jitsi/jicofo/ /var/log/jitsi /usr/share/jicofo && \
-    apt-get remove unzip -y && \
-    apt-get autoremove -y && \
-    apt-get clean -y && \
-    apt-get autoclean -y )
+    apt-get autoclean -y
 
 USER jicofo
 WORKDIR /etc/jitsi/jicofo

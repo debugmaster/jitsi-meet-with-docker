@@ -3,45 +3,7 @@ MAINTAINER camilo@camilo.fm
 
 SHELL ["/bin/bash", "-c"]
 
-ARG SHOULD_BUILD
-
-RUN [[ $SHOULD_BUILD != true ]] || ( \
-    apt-get install -y --no-install-recommends \
-        bzip2 \
-        ca-certificates \
-        git \
-        make \
-        tar \
-        wget )
-
-ARG RELEASE
-ARG RELEASE_VERSION
-ARG REPOSITORY
-
-# Create dummy folder to pass to the next container when it is not built
-RUN [[ $SHOULD_BUILD == true ]] || ( \
-    mkdir -p /tmp/jitsi-meet/ )
-
-RUN [[ $SHOULD_BUILD != true ]] || ( \
-    git clone --depth=1 --branch $RELEASE $REPOSITORY /root/jitsi-meet && \
-    cd /root/jitsi-meet && \
-    wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.33.2/install.sh | bash && \
-    source /root/.nvm/nvm.sh && nvm install v6.10.3 && \
-    npm install && \
-    make && \
-    make source-package && \
-    tar -xjf /root/jitsi-meet/jitsi-meet.tar.bz2 -C /tmp/ )
-
-FROM ubuntu:updated
-
-SHELL ["/bin/bash", "-c"]
-
-COPY --from=0 /tmp/jitsi-meet/ /usr/share/jitsi-meet/
-
-ARG SHOULD_BUILD
-
-RUN [[ $SHOULD_BUILD == true ]] || ( \
-    apt-get install -y --no-install-recommends \
+RUN apt-get install -y --no-install-recommends \
         apt-transport-https \
         ca-certificates \
         nginx \
@@ -50,21 +12,14 @@ RUN [[ $SHOULD_BUILD == true ]] || ( \
     echo 'deb https://download.jitsi.org stable/' > /etc/apt/sources.list.d/jitsi-stable.list && \
     apt-get update && \
     apt-get install jitsi-meet-web -y --no-install-recommends && \
+    groupadd jitsi && \
+    useradd -d /usr/share/jitsi-meet -s /sbin/nologin -g jitsi meet && \
+    mkdir -p /etc/jitsi/meet && \
+    chown -R meet:jitsi /etc/jitsi/meet/ /usr/share/jitsi-meet && \
     apt-get remove wget -y && \
     apt-get autoremove -y && \
     apt-get clean -y && \
-    apt-get autoclean -y)
-
-RUN [[ $SHOULD_BUILD != true ]] || ( \
-    apt-get install -y --no-install-recommends \
-        nginx && \
-    mkdir -p /etc/jitsi/meet && \
-    groupadd jitsi && \
-    useradd -d /usr/share/jitsi-meet -s /sbin/nologin -g jitsi meet && \
-    chown -R meet:jitsi /etc/jitsi/meet/ /usr/share/jitsi-meet && \
-    apt-get autoremove -y && \
-    apt-get clean -y && \
-    apt-get autoclean -y )
+    apt-get autoclean -y
 
 USER meet
 WORKDIR /etc/jitsi/meet

@@ -1,0 +1,48 @@
+FROM ubuntu:updated
+MAINTAINER camilo@camilo.fm
+
+SHELL ["/bin/bash", "-c"]
+
+RUN apt-get install -y --no-install-recommends \
+        bzip2 \
+        ca-certificates \
+        git \
+        make \
+        tar \
+        wget
+
+ARG RELEASE
+ARG RELEASE_VERSION
+ARG REPOSITORY
+
+RUN git clone --depth=1 --branch $RELEASE $REPOSITORY /root/jitsi-meet && \
+    cd /root/jitsi-meet && \
+    wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.33.2/install.sh | bash&& \
+    source /root/.nvm/nvm.sh && nvm install 6 && \
+    npm install && \
+    make && \
+    make source-package && \
+    tar -xjf /root/jitsi-meet/jitsi-meet.tar.bz2 -C /tmp/
+
+FROM ubuntu:updated
+
+SHELL ["/bin/bash", "-c"]
+
+COPY --from=0 /tmp/jitsi-meet/ /usr/share/jitsi-meet/
+
+RUN apt-get install -y --no-install-recommends \
+        nginx && \
+    mkdir -p /etc/jitsi/meet && \
+    groupadd jitsi && \
+    useradd -d /usr/share/jitsi-meet -s /sbin/nologin -g jitsi meet && \
+    chown -R meet:jitsi /etc/jitsi/meet/ /usr/share/jitsi-meet && \
+    apt-get autoremove -y && \
+    apt-get clean -y && \
+    apt-get autoclean -y
+
+USER meet
+WORKDIR /etc/jitsi/meet
+
+EXPOSE 80 443
+
+CMD tail -f /dev/null

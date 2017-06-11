@@ -3,50 +3,9 @@ MAINTAINER camilo@camilo.fm
 
 SHELL ["/bin/bash", "-c"]
 
-ARG SHOULD_BUILD
+RUN apt-get install prosody -y --no-install-recommends
 
-RUN [[ $SHOULD_BUILD == true ]] || ( \
-    apt-get install prosody -y --no-install-recommends )
-
-ARG RELEASE
-ARG REPOSITORY
-
-RUN [[ $SHOULD_BUILD != true ]] || ( \
-    apt-get install -y --no-install-recommends \
-        ca-certificates \
-        gcc \
-        git \
-        libexpat-dev \
-        libidn11-dev \
-        liblua5.1-dev \
-        libssl-dev \
-        lua5.1 \
-        luarocks \
-        make \
-        unzip && \
-    luarocks install luasec && \
-    luarocks install luaexpat && \
-    luarocks install luafilesystem && \
-    luarocks install luabitop && \
-
-    mkdir -p /etc/prosody/ /var/lib/prosody /var/log/prosody /var/run/prosody && \
-    useradd -d /etc/prosody -s /sbin/nologin prosody && \
-    chown -R prosody:prosody /etc/prosody/ /var/lib/prosody /var/log/prosody /var/run/prosody && \
-
-    # Downloading and installing Prosody
-    git clone --depth=1 --branch $RELEASE $REPOSITORY /root/prosody && \
-    cd /root/prosody/ && \
-    ./configure --ostype=debian --prefix=/ --require-config && \
-    make && \
-    make install && \
-    rm /root/prosody/ -rf && \
-
-    apt-get remove gcc git make unzip -y && \
-    apt-get clean -y && \
-    apt-get autoclean -y && \
-    apt-get autoremove -y )
-
-EXPOSE 5222, 5269, 5280, 5281, 5347
+EXPOSE 5222 5269 5280 5281 5347
 
 USER prosody
 WORKDIR /etc/prosody
