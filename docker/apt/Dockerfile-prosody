@@ -1,9 +1,10 @@
-FROM ubuntu:updated
+FROM ubuntu:latest
 MAINTAINER camilo@camilo.fm
 
 SHELL ["/bin/bash", "-c"]
 
-RUN apt-get install prosody -y --no-install-recommends
+RUN apt-get update && \
+    apt-get install prosody -y --no-install-recommends
 
 EXPOSE 5222 5269 5280 5281 5347
 

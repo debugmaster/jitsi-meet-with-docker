@@ -2,10 +2,6 @@
 
 source project.env
 
-docker build \
-    -t ubuntu:updated \
-    -f ./docker/Dockerfile-ubuntu ./docker/
-
 if [[ $BUILD_PROSODY_IMAGE == true ]]; then
     if [[ $BUILD_PROSODY_FROM_SCRATCH == true ]]; then
         docker build \
@@ -16,7 +12,7 @@ if [[ $BUILD_PROSODY_IMAGE == true ]]; then
     else
         docker build \
         -t $DOCKER_REPOSITORY/prosody \
-        -f ./docker/Dockerfile-prosody ./docker/
+        -f ./docker/apt/Dockerfile-prosody ./docker/
     fi
 fi
 
@@ -31,7 +27,7 @@ if [[ $BUILD_JITSI_MEET_IMAGE == true ]]; then
     else
         docker build \
         -t $DOCKER_REPOSITORY/jitsi-meet \
-        -f ./docker/Dockerfile-jitsi-meet ./docker/
+        -f ./docker/apt/Dockerfile-jitsi-meet ./docker/
     fi
 fi
 
@@ -46,7 +42,7 @@ if [[ $BUILD_JICOFO_IMAGE == true ]]; then
     else
         docker build \
         -t $DOCKER_REPOSITORY/jicofo \
-        -f ./docker/Dockerfile-jicofo ./docker/
+        -f ./docker/apt/Dockerfile-jicofo ./docker/
     fi
 fi
 
@@ -61,6 +57,6 @@ if [[ $BUILD_JVB_IMAGE == true ]]; then
     else
         docker build \
         -t $DOCKER_REPOSITORY/jitsi-videobridge \
-        -f ./docker/Dockerfile-jitsi-videobridge ./docker/
+        -f ./docker/apt/Dockerfile-jitsi-videobridge ./docker/
     fi
 fi

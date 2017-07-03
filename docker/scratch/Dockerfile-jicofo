@@ -1,9 +1,10 @@
-FROM ubuntu:updated
+FROM ubuntu:latest
 MAINTAINER camilo@camilo.fm
 
 SHELL ["/bin/bash", "-c"]
 
-RUN apt-get install -y --no-install-recommends \
+RUN apt-get-update && \
+    apt-get install -y --no-install-recommends \
         ant \
         git \
         default-jdk-headless \
@@ -25,14 +26,15 @@ RUN git clone --depth=1 --branch $RELEASE $REPOSITORY /root/jicofo && \
     ant -lib /root/.m2/repository/org/apache/maven/maven-ant-tasks/2.1.3 -Dlabel=$RELEASE_VERSION dist.lin64 && \
     mv /root/jicofo/dist/linux/jicofo-linux-x64-$RELEASE_VERSION.zip /root/jicofo.zip
 
-FROM ubuntu:updated
+FROM ubuntu:latest
 
 SHELL ["/bin/bash", "-c"]
 
 COPY --from=0 /root/jicofo.zip /root/jicofo.zip
 COPY --from=0 /root/jicofo/resources/install/debian/init.d /etc/init.d/jicofo
 
-RUN apt-get install default-jre-headless unzip -y --no-install-recommends && \
+RUN apt-get update && \
+    apt-get install default-jre-headless unzip -y --no-install-recommends && \
     unzip /root/jicofo.zip -d /root/jicofo && \
     mv /root/jicofo/jicofo-linux-x64-* /usr/share/jicofo && \
     chmod 755 /etc/init.d/jicofo && \

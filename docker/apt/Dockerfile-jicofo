@@ -1,19 +1,20 @@
-FROM ubuntu:updated
+FROM ubuntu:latest
 MAINTAINER camilo@camilo.fm
 
 SHELL ["/bin/bash", "-c"]
 
-RUN apt-get install apt-transport-https ca-certificates wget -y --no-install-recommends && \
+RUN apt-get update && \
+    apt-get install apt-transport-https ca-certificates wget -y --no-install-recommends && \
     wget -qO - https://download.jitsi.org/jitsi-key.gpg.key | apt-key add - && \
     echo 'deb https://download.jitsi.org stable/' > /etc/apt/sources.list.d/jitsi-stable.list && \
     apt-get update && \
-    apt-get install jitsi-videobridge -y --no-install-recommends && \
+    apt-get install jicofo -y --no-install-recommends && \
     apt-get remove wget -y && \
     apt-get autoremove -y && \
     apt-get clean -y && \
     apt-get autoclean -y
 
-USER jvb
-WORKDIR /etc/jitsi/videobridge
+USER jicofo
+WORKDIR /etc/jitsi/jicofo
 
 CMD tail -f /dev/null

@@ -1,4 +1,4 @@
-FROM ubuntu:updated
+FROM ubuntu:latest
 MAINTAINER camilo@camilo.fm
 
 SHELL ["/bin/bash", "-c"]
@@ -6,7 +6,8 @@ SHELL ["/bin/bash", "-c"]
 ARG RELEASE
 ARG REPOSITORY
 
-RUN apt-get install -y --no-install-recommends \
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
         ca-certificates \
         gcc \
         git \
