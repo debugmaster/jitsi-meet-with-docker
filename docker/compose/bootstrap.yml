@@ -1,0 +1,12 @@
+version: '3'
+services:
+  bootstrap:
+    image: bootstrap
+    environment:
+     - ADVERTISED_ADDRESS
+     - HOST
+     - RPC_PORT
+     - LAN_PORT
+    ports:
+     - "$RPC_PORT:$RPC_PORT"
+     - "$LAN_PORT:$LAN_PORT"
