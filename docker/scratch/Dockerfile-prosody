@@ -24,9 +24,9 @@ RUN apt-get update && \
     luarocks install luafilesystem && \
     luarocks install luabitop && \
 
-    mkdir -p /etc/prosody/ /var/lib/prosody /var/log/prosody /var/run/prosody && \
+    mkdir -p /etc/prosody/ /var/lib/prosody /var/log/prosody && \
     useradd -d /etc/prosody -s /sbin/nologin prosody && \
-    chown -R prosody:prosody /etc/prosody/ /var/lib/prosody /var/log/prosody /var/run/prosody && \
+    chown -R prosody:prosody /etc/prosody/ /var/lib/prosody /var/log/prosody && \
 
     # Downloading and installing Prosody
     git clone --depth=1 --branch $RELEASE $REPOSITORY /root/prosody && \
@@ -41,9 +41,28 @@ RUN apt-get update && \
     apt-get autoclean -y && \
     apt-get autoremove -y
 
+RUN apt-get update && \
+    apt-get install wget unzip ca-certificates -y --no-install-recommends && \
+    wget https://releases.hashicorp.com/consul/0.8.5/consul_0.8.5_linux_amd64.zip && \
+    wget https://releases.hashicorp.com/consul-template/0.19.0/consul-template_0.19.0_linux_amd64.zip && \
+    unzip consul_0.8.5_linux_amd64.zip && \
+    unzip consul-template_0.19.0_linux_amd64.zip && \
+    rm ./*.zip && \
+    mv consul* /usr/local/bin/ && \
+    apt-get remove wget unzip -y && \
+    apt-get autoremove -y && \
+    apt-get clean -y && \
+    apt-get autoclean -y
+
+COPY ./config/prosody/certs/ /etc/prosody/certs/
+COPY ./config/prosody/templates/ /etc/prosody/templates/
+COPY ./scripts/prosody.sh /etc/prosody/init.sh
+
+RUN chown -R prosody:prosody /etc/prosody/
+
 EXPOSE 5222 5269 5280 5281 5347
 
 USER prosody
 WORKDIR /etc/prosody
 
-CMD prosody
+CMD ./init.sh

@@ -1,0 +1,14 @@
+version: '3'
+services:
+  prosody:
+    image: debugmaster/prosody
+    environment:
+     - ADVERTISED_ADDRESS
+     - HOST
+    ports:
+     - "10101:8301"
+     - "$PROSODY_C2S_SERVICE_PORT:5222"
+     - "$PROSODY_S2S_SERVICE_PORT:5269"
+     - "$PROSODY_HTTP_SERVICE_PORT:5280"
+     - "$PROSODY_HTTPS_SERVICE_PORT:5281"
+     - "$PROSODY_COMPONENT_SERVICE_PORT:5347"
