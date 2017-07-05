@@ -24,7 +24,7 @@ VirtualHost "{{ key "config/host" }}"
         }
 
 Component "conference.{{ key "config/host" }}" "muc_events"
-    modules_enabled = { "token_verification" }
+    --modules_enabled = { "token_verification" }
 
 admins = { "focus@auth.{{ key "config/host" }}" }
 
