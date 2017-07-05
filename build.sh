@@ -2,6 +2,16 @@
 
 source project.env
 
+if [[ $BUILD_PROSODY_IMAGE == true ||
+    $BUILD_JITSI_MEET_IMAGE == true ||
+    $BUILD_JICOFO_FROM_SCRATCH == true ||
+    $BUILD_JVB_FROM_SCRATCH == true ]]
+then
+    docker build \
+    -t bootstrap \
+    -f ./docker/apt/Dockerfile-consul .
+fi
+
 if [[ $BUILD_PROSODY_IMAGE == true ]]; then
     if [[ $BUILD_PROSODY_FROM_SCRATCH == true ]]; then
         docker build \

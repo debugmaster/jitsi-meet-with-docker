@@ -1,4 +1,4 @@
-FROM ubuntu:latest
+FROM bootstrap:latest
 MAINTAINER camilo@camilo.fm
 
 SHELL ["/bin/bash", "-c"]

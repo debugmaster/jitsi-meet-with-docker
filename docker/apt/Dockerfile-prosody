@@ -1,23 +1,10 @@
-FROM ubuntu:latest
+FROM bootstrap:latest
 MAINTAINER camilo@camilo.fm
 
 SHELL ["/bin/bash", "-c"]
 
 RUN apt-get update && \
     apt-get install prosody -y --no-install-recommends
-
-RUN apt-get update && \
-    apt-get install wget unzip ca-certificates -y --no-install-recommends && \
-    wget https://releases.hashicorp.com/consul/0.8.5/consul_0.8.5_linux_amd64.zip && \
-    wget https://releases.hashicorp.com/consul-template/0.19.0/consul-template_0.19.0_linux_amd64.zip && \
-    unzip consul_0.8.5_linux_amd64.zip && \
-    unzip consul-template_0.19.0_linux_amd64.zip && \
-    rm ./*.zip && \
-    mv consul* /usr/local/bin/ && \
-    apt-get remove wget unzip -y && \
-    apt-get autoremove -y && \
-    apt-get clean -y && \
-    apt-get autoclean -y
 
 COPY ./config/prosody/certs/ /etc/prosody/certs/
 COPY ./config/prosody/templates/ /etc/prosody/templates/
