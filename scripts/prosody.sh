@@ -20,7 +20,7 @@ consul agent -config-file=/tmp/consul/consul.json \
 # Wait some time for Consul to set up
 sleep 10
 
-consul info || echo "Consul failed to start" && exit 1;
+consul info > /dev/null || (echo "Consul failed to start" && exit 1);
 
 JICOFO_SECRET=$(echo $RANDOM | md5sum | awk '{ print $1 }')
 JICOFO_AUTH_USER=focus
