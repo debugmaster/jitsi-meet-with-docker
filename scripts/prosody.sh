@@ -1,15 +1,26 @@
 #!/bin/bash
 
 mkdir -p /tmp/consul
+# Advertise a port different from than the one being used
+echo -e '{
+    "advertise_addrs": {
+        "rpc": "'$ADVERTISED_ADDRESS':'$RANDOM_RPC_PORT'",
+        "serf_lan": "'$ADVERTISED_ADDRESS':'$RANDOM_LAN_PORT'"
+    }
+}' > /tmp/consul/consul.json
 
-consul agent -server -bootstrap -node=focus \
+consul agent -config-file=/tmp/consul/consul.json \
+    -node=focus \
+    -join=$ADVERTISED_ADDRESS:$LAN_PORT -retry-max=5 -retry-interval=2s \
     -bind=$(getent hosts $HOSTNAME | awk '{ print $1 }') \
-    -advertise=$ADVERTISED_ADDRESS \
     -data-dir=/tmp/consul \
     > /tmp/consul/consul.log \
     2> /tmp/consul/consul.err &
 
-sleep 3
+# Wait some time for Consul to set up
+sleep 10
+
+consul info || echo "Consul failed to start" && exit 1;
 
 JICOFO_SECRET=$(echo $RANDOM | md5sum | awk '{ print $1 }')
 JICOFO_AUTH_USER=focus

@@ -13,8 +13,8 @@ VirtualHost "{{ key "config/host" }}"
         -- Note that old-style SSL on port 5223 only supports one certificate, and will always
         -- use the global one.
         ssl = {
-                key = "/etc/prosody/certs/example.camilo.fm.key";
-                certificate = "/etc/prosody/certs/example.camilo.fm.crt";
+            key = "/etc/prosody/certs/localhost.key";
+            certificate = "/etc/prosody/certs/localhost.crt";
         }
         -- we need bosh
         modules_enabled = {
