@@ -1,13 +1,13 @@
 -- Plugins path gets uncommented during jitsi-meet-tokens package install - that's where token plugin is located
 plugin_paths = { "/usr/lib/prosody-plugins" }
 
-VirtualHost "{{ key "config/host" }}"
+VirtualHost "{{ key "config/hostname" }}"
         -- enabled = false -- Remove this line to enable this host
-        authentication = "token"
+        authentication = "anonymous"
         -- Properties below are modified by jitsi-meet-tokens package config
         -- and authentication above is switched to "token"
-        app_id="app_id"
-        app_secret="app_secret"
+        --app_id="app_id"
+        --app_secret="app_secret"
         -- Assign this host a certificate for TLS, otherwise it would use the one
         -- set in the global section (if any).
         -- Note that old-style SSL on port 5223 only supports one certificate, and will always
@@ -23,16 +23,16 @@ VirtualHost "{{ key "config/host" }}"
             "ping"; -- Enable mod_ping
         }
 
-Component "conference.{{ key "config/host" }}" "muc_events"
+Component "conference.{{ key "config/hostname" }}" "muc_events"
     --modules_enabled = { "token_verification" }
 
-admins = { "focus@auth.{{ key "config/host" }}" }
+admins = { "focus@auth.{{ key "config/hostname" }}" }
 
-Component "jitsi-videobridge.{{ key "config/host" }}"
+Component "jitsi-videobridge.{{ key "config/hostname" }}"
     component_secret = "uAgHm0Z2"
 
-VirtualHost "auth.{{ key "config/host" }}"
+VirtualHost "auth.{{ key "config/hostname" }}"
     authentication = "internal_plain"
 
-Component "focus.{{ key "config/host" }}"
+Component "focus.{{ key "config/hostname" }}"
     component_secret = "{{ key "component/focus/secret" }}"

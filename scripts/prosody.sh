@@ -1,7 +1,7 @@
 #!/bin/bash
 
 mkdir -p /tmp/consul
-# Advertise a port different from than the one being used
+
 echo -e '{
     "advertise_addrs": {
         "rpc": "'$ADVERTISED_ADDRESS':'$RANDOM_RPC_PORT'",
@@ -10,7 +10,7 @@ echo -e '{
 }' > /tmp/consul/consul.json
 
 consul agent -config-file=/tmp/consul/consul.json \
-    -node=focus \
+    -node=prosody \
     -join=$ADVERTISED_ADDRESS:$LAN_PORT -retry-max=5 -retry-interval=2s \
     -bind=$(getent hosts $HOSTNAME | awk '{ print $1 }') \
     -data-dir=/tmp/consul \
@@ -28,7 +28,8 @@ JICOFO_AUTH_PASSWORD=$(echo $RANDOM | md5sum | awk '{ print $1 }')
 
 prosodyctl register $JICOFO_AUTH_USER auth.$HOST $JICOFO_AUTH_PASSWORD
 
-consul kv put "config/host" $HOST
+consul kv put "config/hostname" $FQDN
+consul kv put "config/server/xmpp" $XMPP
 consul kv put "config/ports/prosody/component" $PROSODY_COMPONENT_SERVICE_PORT
 consul kv put "config/ports/prosody/http" $PROSODY_HTTP_SERVICE_PORT
 consul kv put "config/ports/prosody/https" $PROSODY_HTTPS_SERVICE_PORT

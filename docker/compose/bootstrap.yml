@@ -4,7 +4,6 @@ services:
     image: bootstrap
     environment:
      - ADVERTISED_ADDRESS
-     - HOST
      - RPC_PORT
      - LAN_PORT
     ports:

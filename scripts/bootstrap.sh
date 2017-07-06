@@ -1,7 +1,7 @@
 #!/bin/bash
 
 mkdir -p /tmp/consul
-# Advertise a port different from than the one being used
+
 echo -e '{
     "advertise_addrs": {
         "rpc": "'$ADVERTISED_ADDRESS':'$RPC_PORT'",

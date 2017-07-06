@@ -4,7 +4,8 @@ services:
     image: debugmaster/prosody
     environment:
      - ADVERTISED_ADDRESS
-     - HOST
+     - FQDN
+     - XMPP
      - RPC_PORT
      - LAN_PORT
      - RANDOM_RPC_PORT
