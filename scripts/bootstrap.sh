@@ -3,13 +3,14 @@
 mkdir -p /tmp/consul
 
 echo -e '{
-    "advertise_addrs": {
-        "rpc": "'$ADVERTISED_ADDRESS':'$RPC_PORT'",
-        "serf_lan": "'$ADVERTISED_ADDRESS':'$LAN_PORT'"
+    "ports": {
+        "server": 3333,
+        "serf_lan": 3334
     }
 }' > /etc/consul/consul.json
 
 consul agent -server -bootstrap -config-file=/etc/consul/consul.json \
     -node=bootstrap \
     -bind=$(getent hosts $HOSTNAME | awk '{ print $1 }') \
+    -advertise=$ADVERTISED_ADDRESS \
     -data-dir=/tmp/consul

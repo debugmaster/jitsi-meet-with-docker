@@ -4,5 +4,6 @@ services:
     image: debugmaster/jicofo
     environment:
      - ADVERTISED_ADDRESS
-     - RANDOM_RPC_PORT
-     - RANDOM_LAN_PORT
+    ports:
+     - "6666:6666"
+     - "6667:6667"

@@ -14,12 +14,13 @@ RUN apt-get update && \
     apt-get clean -y && \
     apt-get autoclean -y
 
-COPY ./config/jicofo/templates/ /etc/jitsi/jicofo/templates/
+COPY ./config/jicofo/templates /etc/jitsi/jicofo/templates/
 COPY ./scripts/jicofo.sh /etc/jitsi/jicofo/init.sh
 
-RUN chown -R prosody:prosody /etc/prosody/
+RUN chown -R jicofo:jitsi /etc/jitsi/jicofo/
 
-USER jicofo
+EXPOSE 6666 6667
+
 WORKDIR /etc/jitsi/jicofo
 
 CMD ./init.sh

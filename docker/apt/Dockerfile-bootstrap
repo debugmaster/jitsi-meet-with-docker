@@ -3,4 +3,6 @@ FROM consul:latest
 WORKDIR /etc/consul
 COPY ./scripts/bootstrap.sh bootstrap.sh
 
+EXPOSE 3333 3334
+
 CMD ./bootstrap.sh

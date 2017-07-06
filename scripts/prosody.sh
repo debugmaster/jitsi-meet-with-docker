@@ -3,16 +3,17 @@
 mkdir -p /tmp/consul
 
 echo -e '{
-    "advertise_addrs": {
-        "rpc": "'$ADVERTISED_ADDRESS':'$RANDOM_RPC_PORT'",
-        "serf_lan": "'$ADVERTISED_ADDRESS':'$RANDOM_LAN_PORT'"
+    "ports": {
+        "server": 5555,
+        "serf_lan": 5556
     }
 }' > /tmp/consul/consul.json
 
 consul agent -config-file=/tmp/consul/consul.json \
     -node=prosody \
-    -join=$ADVERTISED_ADDRESS:$LAN_PORT -retry-max=5 -retry-interval=2s \
+    -join=$ADVERTISED_ADDRESS:3334 -retry-max=5 -retry-interval=2s \
     -bind=$(getent hosts $HOSTNAME | awk '{ print $1 }') \
+    -advertise=$ADVERTISED_ADDRESS \
     -data-dir=/tmp/consul \
     > /tmp/consul/consul.log \
     2> /tmp/consul/consul.err &
@@ -26,7 +27,7 @@ JICOFO_SECRET=$(echo $RANDOM | md5sum | awk '{ print $1 }')
 JICOFO_AUTH_USER=focus
 JICOFO_AUTH_PASSWORD=$(echo $RANDOM | md5sum | awk '{ print $1 }')
 
-prosodyctl register $JICOFO_AUTH_USER auth.$HOST $JICOFO_AUTH_PASSWORD
+prosodyctl register $JICOFO_AUTH_USER auth.$FQDN $JICOFO_AUTH_PASSWORD
 
 consul kv put "config/hostname" $FQDN
 consul kv put "config/server/xmpp" $XMPP
@@ -42,6 +43,7 @@ consul kv put "component/focus/auth/password" $JICOFO_AUTH_PASSWORD
 consul-template \
     -template "/etc/prosody/templates/prosody.cfg.lua:/etc/prosody/prosody.cfg.lua:prosodyctl restart" \
     -template "/etc/prosody/templates/migrator.cfg.lua:/etc/prosody/migrator.cfg.lua:prosodyctl restart" \
-    -template "/etc/prosody/templates/config.cfg.lua:/etc/prosody/conf.d/config.cfg.lua:prosodyctl reload" &
+    -template "/etc/prosody/templates/config.cfg.lua:/etc/prosody/conf.d/config.cfg.lua:prosodyctl restart" &
 
-touch /var/log/prosody/prosody.log && tail -f /var/log/prosody/prosody.log
+LOG_FILE=/var/log/prosody/prosody.log
+touch $LOG_FILE && chown prosody:prosody $LOG_FILE && tail -f $LOG_FILE

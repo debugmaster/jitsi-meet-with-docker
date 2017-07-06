@@ -3,16 +3,17 @@
 mkdir -p /tmp/consul
 
 echo -e '{
-    "advertise_addrs": {
-        "rpc": "'$ADVERTISED_ADDRESS':'$RANDOM_RPC_PORT'",
-        "serf_lan": "'$ADVERTISED_ADDRESS':'$RANDOM_LAN_PORT'"
+    "ports": {
+        "server": 6666,
+        "serf_lan": 6667
     }
 }' > /tmp/consul/consul.json
 
 consul agent -config-file=/tmp/consul/consul.json \
     -node=jicofo \
-    -join=$ADVERTISED_ADDRESS:$LAN_PORT -retry-max=5 -retry-interval=2s \
+    -join=$ADVERTISED_ADDRESS:3334 -retry-max=5 -retry-interval=2s \
     -bind=$(getent hosts $HOSTNAME | awk '{ print $1 }') \
+    -advertise=$ADVERTISED_ADDRESS \
     -data-dir=/tmp/consul \
     > /tmp/consul/consul.log \
     2> /tmp/consul/consul.err &
@@ -27,4 +28,5 @@ consul-template \
     -template "/etc/jitsi/jicofo/templates/sip-communicator.properties:/etc/jitsi/jicofo/sip-communicator.properties:service jicofo restart" \
     -template "/etc/jitsi/jicofo/templates/logging.properties:/etc/jitsi/jicofo/logging.properties:service jicofo restart" &
 
-touch /var/log/jitsi/jicofo.log && tail -f /var/log/jitsi/jicofo.log
+LOG_FILE=/var/log/jitsi/jicofo.log
+touch $LOG_FILE && chown jicofo:jitsi $LOG_FILE && tail -f $LOG_FILE

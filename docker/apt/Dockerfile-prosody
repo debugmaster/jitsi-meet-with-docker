@@ -12,9 +12,8 @@ COPY ./scripts/prosody.sh /etc/prosody/init.sh
 
 RUN chown -R prosody:prosody /etc/prosody/
 
-EXPOSE 5222 5269 5280 5281 5347
+EXPOSE 5222 5269 5280 5281 5347 5555 5556
 
-USER prosody
 WORKDIR /etc/prosody
 
 CMD ./init.sh
