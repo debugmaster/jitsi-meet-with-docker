@@ -21,6 +21,8 @@
 -- Example: admins = { "user1@example.com", "user2@example.net" }
 admins = { }
 
+component_interface = "prosody"
+
 -- Enable use of libevent for better performance under high load
 -- For more information see: https://prosody.im/doc/libevent
 --use_libevent = true
@@ -94,7 +96,7 @@ ssl = {
 -- Force clients to use encrypted connections? This option will
 -- prevent clients from authenticating unless they are using encryption.
 
-c2s_require_encryption = true
+c2s_require_encryption = false
 
 -- Force certificate authentication for server-to-server connections?
 -- This provides ideal security, but requires servers you communicate
