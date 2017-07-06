@@ -1,6 +1,6 @@
 # Jitsi Conference Focus settings
 # sets the host name of the XMPP server
-JICOFO_HOST={{ key "config/server/xmpp" }}
+JICOFO_HOST=192.168.0.107
 
 # sets the XMPP domain (default: none)
 JICOFO_HOSTNAME={{ key "config/hostname" }}
