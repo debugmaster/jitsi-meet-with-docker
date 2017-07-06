@@ -15,8 +15,3 @@ RUN apt-get update && \
     apt-get autoremove -y && \
     apt-get clean -y && \
     apt-get autoclean -y
-
-WORKDIR /etc/consul
-COPY ./scripts/bootstrap.sh bootstrap.sh
-
-CMD ./bootstrap.sh

@@ -8,8 +8,12 @@ if [[ $BUILD_PROSODY_IMAGE == true ||
     $BUILD_JVB_FROM_SCRATCH == true ]]
 then
     docker build \
-    -t bootstrap \
+    -t consul \
     -f ./docker/apt/Dockerfile-consul .
+
+    docker build \
+    -t bootstrap \
+    -f ./docker/apt/Dockerfile-bootstrap .
 fi
 
 if [[ $BUILD_PROSODY_IMAGE == true ]]; then

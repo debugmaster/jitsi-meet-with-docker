@@ -1,4 +1,4 @@
-FROM bootstrap:latest
+FROM consul:latest
 MAINTAINER camilo@camilo.fm
 
 SHELL ["/bin/bash", "-c"]
@@ -14,7 +14,12 @@ RUN apt-get update && \
     apt-get clean -y && \
     apt-get autoclean -y
 
+COPY ./config/jicofo/templates/ /etc/jitsi/jicofo/templates/
+COPY ./scripts/jicofo.sh /etc/jitsi/jicofo/init.sh
+
+RUN chown -R prosody:prosody /etc/prosody/
+
 USER jicofo
 WORKDIR /etc/jitsi/jicofo
 
-CMD tail -f /dev/null
+CMD ./init.sh

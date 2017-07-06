@@ -2,6 +2,11 @@
 
 set -a
 source project.env
+if [[ $RUN_LOCALLY == true ]]; then
+    ADVERTISED_ADDRESS=$(ip route get 8.8.8.8 | awk '{print $NF; exit}')
+else
+    ADVERTISED_ADDRESS=$(curl ipinfo.io/ip || wget http://ipinfo.io/ip -qO -)
+fi
 set +a
 
 Randomize_Port () {
@@ -29,4 +34,10 @@ if [[ $RUN_PROSODY == true ]]; then
     export RANDOM_RPC_PORT=$(Randomize_Port $RANDOM_PORT_MIN $RANDOM_PORT_MAX);
     export RANDOM_LAN_PORT=$(Randomize_Port $RANDOM_PORT_MIN $RANDOM_PORT_MAX);
     docker-compose -f ./docker/compose/prosody.yml up -d
+fi
+
+if [[ $RUN_JICOFO == true ]]; then
+    export RANDOM_RPC_PORT=$(Randomize_Port $RANDOM_PORT_MIN $RANDOM_PORT_MAX);
+    export RANDOM_LAN_PORT=$(Randomize_Port $RANDOM_PORT_MIN $RANDOM_PORT_MAX);
+    docker-compose -f ./docker/compose/jicofo.yml up -d
 fi

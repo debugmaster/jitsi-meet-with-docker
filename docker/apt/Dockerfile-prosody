@@ -1,4 +1,4 @@
-FROM bootstrap:latest
+FROM consul:latest
 MAINTAINER camilo@camilo.fm
 
 SHELL ["/bin/bash", "-c"]

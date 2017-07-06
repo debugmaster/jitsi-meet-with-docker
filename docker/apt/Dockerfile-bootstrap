@@ -1,0 +1,6 @@
+FROM consul:latest
+
+WORKDIR /etc/consul
+COPY ./scripts/bootstrap.sh bootstrap.sh
+
+CMD ./bootstrap.sh

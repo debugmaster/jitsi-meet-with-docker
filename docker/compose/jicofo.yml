@@ -1,0 +1,8 @@
+version: '3'
+services:
+  jicofo:
+    image: debugmaster/jicofo
+    environment:
+     - ADVERTISED_ADDRESS
+     - RANDOM_RPC_PORT
+     - RANDOM_LAN_PORT
