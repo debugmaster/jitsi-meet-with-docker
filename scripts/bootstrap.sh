@@ -4,8 +4,8 @@ mkdir -p /tmp/consul
 
 echo -e '{
     "ports": {
-        "server": 3333,
-        "serf_lan": 3334
+        "server": 3334,
+        "serf_lan": 3333
     }
 }' > /etc/consul/consul.json
 

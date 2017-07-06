@@ -4,14 +4,14 @@ mkdir -p /tmp/consul
 
 echo -e '{
     "ports": {
-        "server": 6666,
-        "serf_lan": 6667
+        "server": 4445,
+        "serf_lan": 4444
     }
 }' > /tmp/consul/consul.json
 
 consul agent -config-file=/tmp/consul/consul.json \
     -node=jicofo \
-    -join=$ADVERTISED_ADDRESS:3334 -retry-max=5 -retry-interval=2s \
+    -join=$ADVERTISED_ADDRESS:3333 -retry-max=5 -retry-interval=2s \
     -bind=$(getent hosts $HOSTNAME | awk '{ print $1 }') \
     -advertise=$ADVERTISED_ADDRESS \
     -data-dir=/tmp/consul \
