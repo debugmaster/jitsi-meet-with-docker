@@ -1,7 +1,9 @@
 -- Plugins path gets uncommented during jitsi-meet-tokens package install - that's where token plugin is located
 plugin_paths = { "/usr/lib/prosody-plugins" }
 
-admins = { "focus@auth.{{ key "config/hostname" }}" }
+admins = {
+    "{{ key "component/focus/auth/user" }}@auth.{{ key "config/hostname" }}"
+}
 
 VirtualHost "{{ key "config/hostname" }}"
         -- enabled = false -- Remove this line to enable this host
@@ -31,7 +33,7 @@ Component "conference.{{ key "config/hostname" }}" "muc"
 VirtualHost "auth.{{ key "config/hostname" }}"
     authentication = "internal_plain"
 
-Component "focus.{{ key "config/hostname" }}"
+Component "{{ key "component/focus/auth/user" }}.{{ key "config/hostname" }}"
     component_secret = "{{ key "component/focus/secret" }}"
 
 Component "jitsi-videobridge.{{ key "config/hostname" }}"
