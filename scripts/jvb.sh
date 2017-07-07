@@ -2,14 +2,7 @@
 
 mkdir -p /tmp/consul
 
-echo -e '{
-    "ports": {
-        "server": 6667,
-        "serf_lan": 6666
-    }
-}' > /tmp/consul/consul.json
-
-consul agent -config-file=/tmp/consul/consul.json \
+consul agent \
     -node=jvb-$HOSTNAME \
     -join=$ADVERTISED_ADDRESS:3333 -retry-max=5 -retry-interval=2s \
     -bind=$(getent hosts $HOSTNAME | awk '{ print $1 }') \

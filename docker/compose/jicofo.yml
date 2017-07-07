@@ -4,6 +4,3 @@ services:
     image: debugmaster/jicofo
     environment:
      - ADVERTISED_ADDRESS
-    ports:
-     - "4444:4444"
-     - "4445:4445"

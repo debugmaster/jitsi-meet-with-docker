@@ -19,7 +19,7 @@ COPY ./scripts/jvb.sh /etc/jitsi/videobridge/init.sh
 
 RUN chown -R jvb:jitsi /etc/jitsi/videobridge/
 
-EXPOSE 6666 6667 4443 10000
+EXPOSE 4443 10000
 
 WORKDIR /etc/jitsi/videobridge
 

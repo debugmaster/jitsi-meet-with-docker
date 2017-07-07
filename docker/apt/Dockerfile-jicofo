@@ -19,8 +19,6 @@ COPY ./scripts/jicofo.sh /etc/jitsi/jicofo/init.sh
 
 RUN chown -R jicofo:jitsi /etc/jitsi/jicofo/
 
-EXPOSE 4444 4445
-
 WORKDIR /etc/jitsi/jicofo
 
 CMD ./init.sh
