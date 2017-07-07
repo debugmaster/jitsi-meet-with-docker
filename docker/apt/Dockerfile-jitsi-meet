@@ -22,9 +22,14 @@ RUN apt-get update && \
     apt-get clean -y && \
     apt-get autoclean -y
 
-USER meet
+COPY ./config/prosody/certs/ /etc/jitsi/meet/certs/
+COPY ./config/jitsi-meet/templates/ /etc/jitsi/meet/templates/
+COPY ./scripts/meet.sh /etc/jitsi/meet/init.sh
+
+RUN chown -R meet:jitsi /etc/jitsi/meet
+
 WORKDIR /etc/jitsi/meet
 
 EXPOSE 80 443
 
-CMD tail -f /dev/null
+CMD ./init.sh

@@ -19,6 +19,10 @@ if [[ $RUN_PROSODY == true ]]; then
     docker-compose -f ./docker/compose/prosody.yml up -d
 fi
 
+if [[ $RUN_JITSI_MEET == true ]]; then
+    docker-compose -f ./docker/compose/meet.yml up -d
+fi
+
 if [[ $RUN_JICOFO == true ]]; then
     docker-compose -f ./docker/compose/jicofo.yml up -d
 fi
