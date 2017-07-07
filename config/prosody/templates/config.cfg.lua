@@ -34,3 +34,8 @@ VirtualHost "auth.{{ key "config/hostname" }}"
 
 Component "{{ key "component/focus/auth/user" }}.{{ key "config/hostname" }}"
     component_secret = "{{ key "component/focus/secret" }}"
+
+{{ range ls "component/videobridges" }}
+Component "{{ .Key }}.{{ key "config/hostname" }}"
+    component_secret = "{{ .Value }}"
+{{ end }}
