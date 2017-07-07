@@ -14,7 +14,13 @@ RUN apt-get update && \
     apt-get clean -y && \
     apt-get autoclean -y
 
-USER jvb
+COPY ./config/jitsi-videobridge/templates/ /etc/jitsi/videobridge/templates/
+COPY ./scripts/jvb.sh /etc/jitsi/videobridge/init.sh
+
+RUN chown -R jvb:jitsi /etc/jitsi/videobridge/
+
+EXPOSE 6666 6667 4443 10000
+
 WORKDIR /etc/jitsi/videobridge
 
-CMD tail -f /dev/null
+CMD ./init.sh

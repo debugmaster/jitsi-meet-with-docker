@@ -22,3 +22,7 @@ fi
 if [[ $RUN_JICOFO == true ]]; then
     docker-compose -f ./docker/compose/jicofo.yml up -d
 fi
+
+if [[ $RUN_JVB == true ]]; then
+    docker-compose -f ./docker/compose/jvb.yml up -d
+fi
