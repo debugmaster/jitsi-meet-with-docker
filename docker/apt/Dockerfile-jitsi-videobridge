@@ -1,5 +1,6 @@
+# MAINTAINER camilo@camilo.fm
+
 FROM consul:latest
-MAINTAINER camilo@camilo.fm
 
 SHELL ["/bin/bash", "-c"]
 

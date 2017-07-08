@@ -1,5 +1,6 @@
+# MAINTAINER camilo@camilo.fm
+
 FROM ubuntu:latest
-MAINTAINER camilo@camilo.fm
 
 SHELL ["/bin/bash", "-c"]
 
