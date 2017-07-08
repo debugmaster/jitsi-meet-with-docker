@@ -21,7 +21,7 @@
 -- Example: admins = { "user1@example.com", "user2@example.net" }
 admins = { }
 
-component_interface = "prosody"
+component_interface = "prosody" --Bind to container's private IP
 
 -- Enable use of libevent for better performance under high load
 -- For more information see: https://prosody.im/doc/libevent
@@ -153,6 +153,7 @@ log = {
 -- You need to add a VirtualHost entry for each domain you wish Prosody to serve.
 -- Settings under each VirtualHost entry apply *only* to that host.
 
+VirtualHost "localhost" --Prevents prosody from exit at start
 
 ------ Components ------
 -- You can specify components to add hosts that provide special services,
