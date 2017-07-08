@@ -1,5 +1,6 @@
+# MAINTAINER camilo@camilo.fm
+
 FROM ubuntu:latest
-MAINTAINER camilo@camilo.fm
 
 SHELL ["/bin/bash", "-c"]
 
@@ -25,7 +26,7 @@ RUN git clone --depth=1 --branch $RELEASE $REPOSITORY /root/jitsi-meet && \
     make source-package && \
     tar -xjf /root/jitsi-meet/jitsi-meet.tar.bz2 -C /tmp/
 
-FROM ubuntu:latest
+FROM consul:latest
 
 SHELL ["/bin/bash", "-c"]
 
@@ -42,9 +43,14 @@ RUN apt-get update && \
     apt-get clean -y && \
     apt-get autoclean -y
 
-USER meet
+COPY ./config/prosody/certs/ /etc/jitsi/meet/certs/
+COPY ./config/jitsi-meet/templates/ /etc/jitsi/meet/templates/
+COPY ./scripts/meet.sh /etc/jitsi/meet/init.sh
+
+RUN chown -R meet:jitsi /etc/jitsi/meet
+
 WORKDIR /etc/jitsi/meet
 
 EXPOSE 80 443
 
-CMD tail -f /dev/null
+CMD ./init.sh

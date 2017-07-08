@@ -1,5 +1,6 @@
+# MAINTAINER camilo@camilo.fm
+
 FROM ubuntu:latest
-MAINTAINER camilo@camilo.fm
 
 SHELL ["/bin/bash", "-c"]
 
@@ -26,7 +27,7 @@ RUN git clone --depth=1 --branch $RELEASE $REPOSITORY /root/jitsi-videobridge &&
     ant -lib /root/.m2/repository/org/apache/maven/maven-ant-tasks/2.1.3 -Dlabel=$RELEASE_VERSION dist.lin64 && \
     mv /root/jitsi-videobridge/dist/linux/jitsi-videobridge-linux-x64-$RELEASE_VERSION.zip /root/jitsi-videobridge.zip
 
-FROM ubuntu:latest
+FROM consul:latest
 
 SHELL ["/bin/bash", "-c"]
 
@@ -47,7 +48,13 @@ RUN apt-get update && \
     apt-get clean -y && \
     apt-get autoclean -y
 
-USER jvb
+COPY ./config/jitsi-videobridge/templates/ /etc/jitsi/videobridge/templates/
+COPY ./scripts/jvb.sh /etc/jitsi/videobridge/init.sh
+
+RUN chown -R jvb:jitsi /etc/jitsi/videobridge/
+
+EXPOSE 4443 10000
+
 WORKDIR /etc/jitsi/videobridge
 
-CMD tail -f /dev/null
+CMD ./init.sh
