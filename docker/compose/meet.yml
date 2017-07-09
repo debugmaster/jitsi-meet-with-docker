@@ -4,6 +4,7 @@ services:
     image: debugmaster/jitsi-meet
     environment:
      - ADVERTISED_ADDRESS
+     - XMPP_SERVER
     ports:
      - "80:80"
      - "443:443"

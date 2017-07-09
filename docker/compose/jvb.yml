@@ -4,3 +4,4 @@ services:
     image: debugmaster/jitsi-videobridge
     environment:
      - ADVERTISED_ADDRESS
+     - XMPP_SERVER

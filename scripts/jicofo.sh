@@ -4,7 +4,7 @@ mkdir -p /tmp/consul
 
 consul agent \
     -node=jicofo \
-    -join=$ADVERTISED_ADDRESS:5555 -retry-max=5 -retry-interval=2s \
+    -join=$XMPP_SERVER:5555 -retry-max=5 -retry-interval=2s \
     -bind=$(getent hosts $HOSTNAME | awk '{ print $1 }') \
     -advertise=$ADVERTISED_ADDRESS \
     -data-dir=/tmp/consul \
