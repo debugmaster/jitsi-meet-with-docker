@@ -2,9 +2,15 @@
 
 mkdir -p /tmp/consul
 
-consul agent \
+echo -e '{
+    "ports": {
+        "server": 5554,
+        "serf_lan": 5555
+    }
+}' > /tmp/consul/consul.json
+
+consul agent -server -bootstrap -config-file=/tmp/consul/consul.json \
     -node=prosody \
-    -join=$ADVERTISED_ADDRESS:3333 -retry-max=5 -retry-interval=2s \
     -bind=$(getent hosts $HOSTNAME | awk '{ print $1 }') \
     -advertise=$ADVERTISED_ADDRESS \
     -data-dir=/tmp/consul \

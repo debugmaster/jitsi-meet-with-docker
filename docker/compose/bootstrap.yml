@@ -1,9 +1,0 @@
-version: '3'
-services:
-  bootstrap:
-    image: bootstrap
-    environment:
-     - ADVERTISED_ADDRESS
-    ports:
-     - "3333:3333"
-     - "3334:3334"

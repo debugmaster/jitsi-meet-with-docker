@@ -11,10 +11,6 @@ set +a
 
 docker stop $(docker ps -q)
 
-if [[ $RUN_BOOTSTRAP == true ]]; then
-    docker-compose -f ./docker/compose/bootstrap.yml up -d
-fi
-
 if [[ $RUN_PROSODY == true ]]; then
     docker-compose -f ./docker/compose/prosody.yml up -d
 fi
