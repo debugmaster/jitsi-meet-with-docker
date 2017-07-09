@@ -9,6 +9,10 @@ echo -e '{
     }
 }' > /tmp/consul/consul.json
 
+if [[ $(getent hosts $XMPP_SERVER | awk '{ print $1 }') != $ADVERTISED_ADDRESS ]]; then
+    echo "Prosody may not work because $XMPP_SERVER was not resolved $ADVERTISED_ADDRESS."
+fi
+
 consul agent -server -bootstrap -config-file=/tmp/consul/consul.json \
     -node=prosody \
     -bind=$(getent hosts $HOSTNAME | awk '{ print $1 }') \
@@ -22,8 +26,8 @@ sleep 10
 
 consul info > /dev/null || (echo "Consul failed to start" && exit 1);
 
-consul kv put "config/hostname" $FQDN
-consul kv put "config/server/xmpp" $XMPP
+consul kv put "config/hostname" $DOMAIN
+consul kv put "config/server/xmpp" $XMPP_SERVER
 consul kv put "config/ports/prosody/component" $PROSODY_COMPONENT_SERVICE_PORT
 consul kv put "config/ports/prosody/http" $PROSODY_HTTP_SERVICE_PORT
 consul kv put "config/ports/prosody/https" $PROSODY_HTTPS_SERVICE_PORT

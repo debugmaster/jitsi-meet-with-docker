@@ -4,8 +4,8 @@ services:
     image: debugmaster/prosody
     environment:
      - ADVERTISED_ADDRESS
-     - FQDN
-     - XMPP
+     - DOMAIN
+     - XMPP_SERVER
      - PROSODY_C2S_SERVICE_PORT
      - PROSODY_S2S_SERVICE_PORT
      - PROSODY_HTTP_SERVICE_PORT
