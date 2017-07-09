@@ -39,6 +39,7 @@ modules_enabled = {
 		"dialback"; -- s2s dialback support
 		"disco"; -- Service discovery
 		"posix";
+		"reload";
 
 	-- Not essential, but recommended
 		"private"; -- Private XML storage (for room bookmarks, etc.)

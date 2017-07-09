@@ -38,7 +38,7 @@ consul-template \
     -template "/etc/prosody/templates/create_jicofo_user.sh:/etc/prosody/create_jicofo_user.sh:sh /etc/prosody/create_jicofo_user.sh" \
     -template "/etc/prosody/templates/prosody.cfg.lua:/etc/prosody/prosody.cfg.lua:prosodyctl restart" \
     -template "/etc/prosody/templates/migrator.cfg.lua:/etc/prosody/migrator.cfg.lua:prosodyctl restart" \
-    -template "/etc/prosody/templates/config.cfg.lua:/etc/prosody/conf.d/config.cfg.lua:prosodyctl restart" &
+    -template "/etc/prosody/templates/config.cfg.lua:/etc/prosody/conf.d/config.cfg.lua:prosodyctl reload" &
 
 LOG_FILE=/var/log/prosody/prosody.log
 touch $LOG_FILE && chown prosody:prosody $LOG_FILE && tail -f $LOG_FILE

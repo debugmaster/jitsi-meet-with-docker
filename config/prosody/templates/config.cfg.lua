@@ -1,6 +1,3 @@
--- Plugins path gets uncommented during jitsi-meet-tokens package install - that's where token plugin is located
-plugin_paths = { "/usr/lib/prosody-plugins" }
-
 admins = {
     "{{ key "component/focus/auth/user" }}@auth.{{ key "config/hostname" }}"
 }

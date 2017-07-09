@@ -44,9 +44,10 @@ RUN apt-get update && \
 
 COPY ./config/prosody/certs/ /etc/prosody/certs/
 COPY ./config/prosody/templates/ /etc/prosody/templates/
+COPY ./config/prosody/plugins_or_modules/ /usr/lib/prosody/modules/
 COPY ./scripts/prosody.sh /etc/prosody/init.sh
 
-RUN chown -R prosody:prosody /etc/prosody/
+RUN chown -R prosody:prosody /etc/prosody/ /usr/lib/prosody/
 
 EXPOSE 5222 5269 5280 5281 5347 5554 5555
 
