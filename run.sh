@@ -9,20 +9,18 @@ else
 fi
 set +a
 
-docker stop $(docker ps -q)
-
 if [[ $RUN_PROSODY == true ]]; then
-    docker-compose -f ./docker/compose/prosody.yml up -d
+    docker-compose -f ./docker/compose/prosody.yml up -d --force-recreate
 fi
 
 if [[ $RUN_JITSI_MEET == true ]]; then
-    docker-compose -f ./docker/compose/meet.yml up -d
+    docker-compose -f ./docker/compose/meet.yml up -d --force-recreate
 fi
 
 if [[ $RUN_JICOFO == true ]]; then
-    docker-compose -f ./docker/compose/jicofo.yml up -d
+    docker-compose -f ./docker/compose/jicofo.yml up -d --force-recreate
 fi
 
 if [[ $RUN_JVB == true ]]; then
-    docker-compose -f ./docker/compose/jvb.yml up -d
+    docker-compose -f ./docker/compose/jvb.yml up -d --force-recreate
 fi
