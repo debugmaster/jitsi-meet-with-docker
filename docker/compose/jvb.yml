@@ -5,3 +5,8 @@ services:
     environment:
      - ADVERTISED_ADDRESS
      - XMPP_SERVER
+    ports:
+     - "4443:4443"
+     - "4443:4443/udp"
+     - "10000:10000"
+     - "10000:10000/udp"

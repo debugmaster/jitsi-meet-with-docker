@@ -53,7 +53,7 @@ COPY ./scripts/jvb.sh /etc/jitsi/videobridge/init.sh
 
 RUN chown -R jvb:jitsi /etc/jitsi/videobridge/
 
-EXPOSE 4443 10000
+EXPOSE 4443 4443/udp 10000 10000/udp
 
 WORKDIR /etc/jitsi/videobridge
 
