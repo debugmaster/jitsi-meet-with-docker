@@ -1,4 +1,7 @@
 admins = {
+    {{ range ls "component/videobridges" }}
+    "{{ .Key }}.{{ key "config/hostname" }}",
+    {{ end }}
     "{{ key "component/focus/auth/user" }}@auth.{{ key "config/hostname" }}"
 }
 
